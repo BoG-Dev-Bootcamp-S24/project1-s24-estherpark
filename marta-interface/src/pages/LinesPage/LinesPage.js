@@ -6,6 +6,8 @@ import "./LinesPage.css";
 
 export default function LinesPage() {
   const [activeColor, setActiveColor] = useState(null);
+  const [loading, setLoading] = useState(null);
+  const [data, setData] = useState(null);
 
   const handleColorButtonsClick = (color) => {
     console.log(`Selected color: ${color}`);
@@ -20,12 +22,12 @@ export default function LinesPage() {
           setData(arrivalsData);
           setLoading(false);
         });
-      fetch ("https://midsem-bootcamp-api.onrender.com/stations/${activeColor}")
-      .then ((response => response.json()))
-      .then((stationsData) => {
-        setData(stationsData);
-        setLoading(false);
-      });
+      fetch("https://midsem-bootcamp-api.onrender.com/stations/${activeColor}")
+        .then((response) => response.json())
+        .then((stationsData) => {
+          setData(stationsData);
+          setLoading(false);
+        });
     }
   }, [activeColor]); //initiate fetch when activeColor changes
 

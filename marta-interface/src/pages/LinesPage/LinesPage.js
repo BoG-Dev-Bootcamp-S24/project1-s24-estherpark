@@ -20,18 +20,12 @@ export default function LinesPage() {
           setData(arrivalsData);
           setLoading(false);
         });
-        .catch((error) => {
-          setLoading(false);
-        });
       fetch ("https://midsem-bootcamp-api.onrender.com/stations/${activeColor}")
       .then ((response => response.json()))
       .then((stationsData) => {
         setData(stationsData);
         setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(false);
-      })
+      });
     }
   }, [activeColor]); //initiate fetch when activeColor changes
 

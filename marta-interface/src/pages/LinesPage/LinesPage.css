@@ -1,0 +1,12 @@
+.container {
+    margin: 50px 50px 50px 50px; /*top right bottom left */
+}
+
+.color-indicator {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    text-transform: uppercase;
+    border-top: 2px solid lightgray;
+    border-bottom: 2px solid lightgray;
+}

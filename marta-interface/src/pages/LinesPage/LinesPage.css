@@ -10,3 +10,19 @@
     border-top: 2px solid lightgray;
     border-bottom: 2px solid lightgray;
 }
+
+.info-container {
+    display: flex;
+}
+
+.navbar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.station-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}

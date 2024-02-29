@@ -1,53 +1,113 @@
-//Within the TrainList.js component, the data should be filtered to only return info for trains that are part of the specific line.
-//For example, for the gold line we only want an array of gold trains.
-import React, { useEffect, useState } from "react";
-import ColorButtons from "../../components/ColorButtons/ColorButtons";
+import { useEffect, useState } from "react";
+import Navbar from "../../components/Navbar/Navbar";
+import TrainList from "../../components/TrainList/TrainList";
+import { useNavigate } from "react-router";
 import "./LinesPage.css";
 
-export default function LinesPage() {
-  const [activeColor, setActiveColor] = useState(null);
-  const [loading, setLoading] = useState(null);
-  const [data, setData] = useState(null);
+export default function LinesPage({ color }) {
+  const [direction, setDirection] = useState("");
+  const [stationsdata, setStationsData] = useState(null);
+  const [arrivalsdata, setArrivalsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [currentStation, setCurrentStation] = useState("all");
+  const [newcolor, setNewColor] = useState(color);
 
-  const handleColorButtonsClick = (color) => {
-    console.log(`Selected color: ${color}`);
-  };
+  const stationsURL = "https://midsem-bootcamp-api.onrender.com/stations/";
+  const arrivalsURL = "https://midsem-bootcamp-api.onrender.com/arrivals/";
+
+  const navigate = useNavigate();
+
+  async function fetchData() {
+    setLoading(true);
+    try {
+      const result = await fetch(stationsURL + newcolor);
+      const fetchedData = await result.json();
+      setStationsData(fetchedData);
+      const results = await fetch(arrivalsURL + newcolor);
+      const fetchedDatas = await results.json();
+      setArrivalsData(fetchedDatas);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    setLoading(false);
+  }
 
   useEffect(() => {
-    if (activeColor != null) {
-      setLoading(true);
-      fetch("https://midsem-bootcamp-api.onrender.com/arrivals/${activeColor}")
-        .then((response) => response.json())
-        .then((arrivalsData) => {
-          setData(arrivalsData);
-          setLoading(false);
-        });
-      fetch("https://midsem-bootcamp-api.onrender.com/stations/${activeColor}")
-        .then((response) => response.json())
-        .then((stationsData) => {
-          setData(stationsData);
-          setLoading(false);
-        });
+    fetchData();
+    if (color === "green" || color === "blue") {
+      setDirection("E");
+    } else {
+      setDirection("N");
     }
-  }, [activeColor]); //initiate fetch when activeColor changes
+  }, [newcolor]);
 
-  return (
+  return loading ? (
+    <div>loading...</div>
+  ) : (
     <div className="container">
-      <div className="color-container">
-        <ColorButtons
-          onColorButtonsClick={handleColorButtonsClick}
-          activeColor={activeColor}
-          setActiveColor={setActiveColor}
-        />
-        <div className="color-indicator">
-          <h1>{`${activeColor === null ? "None selected" : activeColor}`}</h1>
+      <div className="color-button">
+        <button
+          className="gold-button"
+          onClick={() => {
+            setLoading(true);
+            setCurrentStation("all");
+            setNewColor("gold");
+            navigate("/linespage/gold");
+          }}
+        >
+          Gold
+        </button>
+        <button
+          className="red-button"
+          onClick={() => {
+            setLoading(true);
+            setCurrentStation("all");
+            setNewColor("red");
+            navigate("/linespage/red");
+          }}
+        >
+          Red
+        </button>
+        <button
+          className="blue-button"
+          onClick={() => {
+            setLoading(true);
+            setCurrentStation("all");
+            setNewColor("blue");
+            navigate("/linespage/blue");
+          }}
+        >
+          Blue
+        </button>
+        <button
+          className="green-button"
+          onClick={() => {
+            setLoading(true);
+            setCurrentStation("all");
+            setNewColor("green");
+            navigate("/linespage/green");
+          }}
+        >
+          Green
+        </button>
+      </div>
+      <div className="color-indicator">{newcolor.toUpperCase()}</div>
+      <div className="columns">
+        <div className="column1">
+          <Navbar
+            stationsdata={stationsdata}
+            loading={loading}
+            setCurrentStation={setCurrentStation}
+          />
         </div>
-        <div className="info-container">
-          <div className="navbar-container"></div>
-          <div className="station-container">
-            <div className="status-container"></div>
-            <div className="trainlist-sections"></div>
-          </div>
+        <div className="column2">
+          <TrainList
+            arrivalsdata={arrivalsdata}
+            direction={direction}
+            loading={loading}
+            color={newcolor}
+            currentStation={currentStation}
+          />
         </div>
       </div>
     </div>
